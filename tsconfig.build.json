@@ -9,7 +9,8 @@
     "noEmit": false,
     "types": [],
     "module": "NodeNext",
-    "moduleResolution": "NodeNext"
+    "moduleResolution": "NodeNext",
+    "allowImportingTsExtensions": false
   },
   "include": [
     "src"
