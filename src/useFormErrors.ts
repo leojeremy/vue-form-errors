@@ -41,10 +41,28 @@ function messagesOf(value: ErrorValue): string[] {
  * "first error" has to mean first ON THE PAGE, or focus jumps to the middle
  * of the form and the user cannot tell what happened.
  */
+export interface UseFormErrorsOptions {
+    /**
+     * Prepended to every id, as `${idPrefix}-${field}`. Needed when two forms
+     * on one page share a field name: without it both inputs get the same
+     * id, and focus and `aria-describedby` resolve to whichever is first in
+     * the document.
+     */
+    idPrefix?: string;
+}
+
 export function useFormErrors<TField extends string>(
     errors: () => FieldErrors<TField> | undefined,
     fieldOrder: readonly TField[],
+    options: UseFormErrorsOptions = {},
 ) {
+    const prefix = options.idPrefix ? `${options.idPrefix}-` : '';
+
+    /** The id the input must carry, so focus can find it. */
+    function fieldId(field: TField): string {
+        return `${prefix}${field}`;
+    }
+
     /** Every non-empty message for the field, in the order the server sent them. */
     function messages(field: TField): string[] {
         return messagesOf(errors()?.[field]);
@@ -61,7 +79,7 @@ export function useFormErrors<TField extends string>(
 
     /** The id the error element carries, and the input points at. */
     function errorId(field: TField): string {
-        return `${field}-error`;
+        return `${fieldId(field)}-error`;
     }
 
     /** `aria-describedby`, or undefined so the attribute is omitted entirely. */
@@ -111,8 +129,8 @@ export function useFormErrors<TField extends string>(
         // errors, so the element being focused may not exist yet.
         await nextTick();
 
-        document.getElementById(field)?.focus();
+        document.getElementById(fieldId(field))?.focus();
     });
 
-    return { errorId, describedBy, invalid, message, messages, firstErroredField };
+    return { fieldId, errorId, describedBy, invalid, message, messages, firstErroredField };
 }
