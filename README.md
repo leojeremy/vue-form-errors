@@ -176,11 +176,12 @@ This opens a Vite page with a long form and a second form that shares field name
 
 ## Background
 
-This was generalised from a composable I wrote for a larger private project: a Laravel + Inertia + Vue 3 admin app that is pre-launch and has not been run at scale. For this repo I removed the Inertia-specific parts, accepted both string and array messages, and fixed three problems, each with a test:
+This was generalised from a composable I wrote for a larger private project: a Laravel + Inertia + Vue 3 admin app that is pre-launch and has not been run at scale. For this repo I removed the Inertia-specific parts, accepted both string and array messages, and fixed four problems found along the way, each with a test:
 
 - ids could collide when two forms on one page share a field name (`idPrefix`);
 - an empty message list `[]` counted as an error;
-- clearing one field's error while another stayed rejected moved focus away from the field being edited.
+- clearing one field's error while another stayed rejected moved focus away from the field being edited;
+- setting errors outside a browser threw `document is not defined`.
 
 ## Development
 
