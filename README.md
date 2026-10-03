@@ -170,7 +170,7 @@ This opens a Vite page with a long form and a second form that shares field name
 - **The input must carry `fieldId(field)` and be focusable.** If a custom input component puts the id on a wrapper `<div>`, focus lands on nothing useful.
 - **Errors present when the component mounts do not move focus.** Only changes after mount do. A server-rendered page that arrives already rejected needs its own initial focus.
 - **Resubmitting with exactly the same rejected fields does not move focus**, by design (see the table above). The fields are already marked invalid.
-- **Browser only for focus.** Focus uses `document.getElementById`, so it does not reach into shadow DOM.
+- **Focus needs a browser DOM.** It uses `document.getElementById`, so it does not reach into shadow DOM. Without a `document` (server-side code, a Node test) focusing is skipped; the attribute helpers still work.
 - **Not a validator.** There are no client-side rules. It only presents errors that something else produced.
 - **No live-region announcement** of a summary such as "3 errors". Moving focus to the field is what screen readers announce; add a summary yourself if you need one.
 

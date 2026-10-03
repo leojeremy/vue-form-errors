@@ -141,6 +141,11 @@ export function useFormErrors<TField extends string>(
         // errors, so the element being focused may not exist yet.
         await nextTick();
 
+        // No DOM (server-side code, a Node test): nothing to focus.
+        if (typeof document === 'undefined') {
+            return;
+        }
+
         document.getElementById(fieldId(field))?.focus();
     });
 
