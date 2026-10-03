@@ -1,0 +1,99 @@
+:root {
+    color-scheme: light dark;
+    --bg: #ffffff;
+    --fg: #1c1c1e;
+    --muted: #5b5b63;
+    --border: #c7c7cc;
+    --error: #b3261e;
+    --focus: #1a5fd6;
+    font-family: system-ui, sans-serif;
+    line-height: 1.5;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #161618;
+        --fg: #ececf0;
+        --muted: #a3a3ab;
+        --border: #4a4a50;
+        --error: #ff8a80;
+        --focus: #7aa7ff;
+    }
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+}
+
+main {
+    max-width: 36rem;
+    margin: 0 auto;
+    padding: 2rem 1rem 6rem;
+}
+
+.lede {
+    color: var(--muted);
+}
+
+section {
+    margin-top: 2.5rem;
+}
+
+.field {
+    display: grid;
+    gap: 0.25rem;
+    margin-bottom: 1.25rem;
+}
+
+label {
+    font-weight: 600;
+}
+
+input {
+    font: inherit;
+    padding: 0.5rem 0.625rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: transparent;
+    color: inherit;
+}
+
+input:focus-visible,
+button:focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+}
+
+input[aria-invalid='true'] {
+    border-color: var(--error);
+}
+
+.error {
+    color: var(--error);
+    font-size: 0.9rem;
+}
+
+.error p,
+p.error {
+    margin: 0;
+}
+
+button {
+    font: inherit;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--fg);
+    color: var(--bg);
+    cursor: pointer;
+}
+
+button:disabled {
+    opacity: 0.6;
+}
+
+.status {
+    min-height: 1.5em;
+}
