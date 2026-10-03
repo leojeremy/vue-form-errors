@@ -124,6 +124,24 @@ describe('useFormErrors', () => {
         expect(document.activeElement).toBe(wrapper.get('#email').element);
     });
 
+    it('does not move focus when a rejected field is cleared while another stays rejected', async () => {
+        // A common pattern clears a field's error as soon as the user edits
+        // it. The set of rejected fields shrinks, but nothing new was
+        // rejected, so the cursor must stay where the user is typing.
+        const { errors, wrapper } = harness();
+
+        errors.value = { first_name: 'Required.', email: 'Invalid.' };
+        await settle(wrapper);
+        expect(document.activeElement).toBe(wrapper.get('#first_name').element);
+
+        // The user moves to the email field and starts fixing it.
+        (wrapper.get('#email').element as HTMLInputElement).focus();
+        errors.value = { first_name: 'Required.' };
+        await settle(wrapper);
+
+        expect(document.activeElement).toBe(wrapper.get('#email').element);
+    });
+
     it('moves focus again when a later submit is rejected', async () => {
         const { errors, wrapper } = harness();
 

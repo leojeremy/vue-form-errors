@@ -18,6 +18,16 @@ function messagesOf(value: ErrorValue): string[] {
     return value ? value.filter((message) => message !== '') : [];
 }
 
+export interface UseFormErrorsOptions {
+    /**
+     * Prepended to every id, as `${idPrefix}-${field}`. Needed when two forms
+     * on one page share a field name: without it both inputs get the same
+     * id, and focus and `aria-describedby` resolve to whichever is first in
+     * the document.
+     */
+    idPrefix?: string;
+}
+
 /**
  * Wires validation errors to the inputs they belong to, and moves focus to
  * the first one when a submit comes back rejected.
@@ -32,25 +42,16 @@ function messagesOf(value: ErrorValue): string[] {
  *
  * Focus is moved rather than the page scrolled, because focus takes the
  * scroll with it and also puts the caret where the correction has to be
- * typed. It is deliberately only moved when the SET of rejected fields
- * changes. Re-focusing on every keystroke while somebody is fixing the field
- * would fight them for the cursor.
+ * typed. It is deliberately only moved when a field is newly rejected.
+ * Re-focusing on every keystroke while somebody is fixing the field, or
+ * when the error on the field they are fixing is cleared, would fight them
+ * for the cursor.
  *
  * `fieldOrder` is passed in rather than derived from the error object: the
  * server returns errors keyed in whatever order the validator produced, and
  * "first error" has to mean first ON THE PAGE, or focus jumps to the middle
  * of the form and the user cannot tell what happened.
  */
-export interface UseFormErrorsOptions {
-    /**
-     * Prepended to every id, as `${idPrefix}-${field}`. Needed when two forms
-     * on one page share a field name: without it both inputs get the same
-     * id, and focus and `aria-describedby` resolve to whichever is first in
-     * the document.
-     */
-    idPrefix?: string;
-}
-
 export function useFormErrors<TField extends string>(
     errors: () => FieldErrors<TField> | undefined,
     fieldOrder: readonly TField[],
@@ -107,15 +108,26 @@ export function useFormErrors<TField extends string>(
      *
      * Watching the error object itself would re-fire on every reworded
      * message, and watching a boolean "has errors" would not fire when the
-     * failure moves from one field to another. `'0101'` changes in exactly
-     * the cases focus should move and no others.
+     * failure moves from one field to another.
      */
     function rejectedFields(): string {
         return fieldOrder.map((field) => (hasError(field) ? '1' : '0')).join('');
     }
 
+    /**
+     * True when at least one field is rejected now that was not before.
+     *
+     * Only a NEW rejection moves focus. When the set merely shrinks (the app
+     * clears a field's error as the user edits it, while another field is
+     * still rejected), moving focus would pull the cursor out of the field
+     * being typed in.
+     */
+    function newlyRejected(next: string, previous: string): boolean {
+        return [...next].some((flag, index) => flag === '1' && previous[index] !== '1');
+    }
+
     watch(rejectedFields, async (next, previous) => {
-        if (next === previous || !next.includes('1')) {
+        if (!newlyRejected(next, previous)) {
             return;
         }
 
