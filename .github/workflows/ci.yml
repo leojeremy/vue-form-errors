@@ -24,4 +24,6 @@ jobs:
       - run: npm run typecheck
       - run: npm test
       - run: npm run build
+      - name: Built package loads in plain Node ESM
+        run: node -e "import('./dist/index.js').then((m) => { if (typeof m.useFormErrors !== 'function' || typeof m.fromLaravel422 !== 'function') process.exit(1); })"
       - run: npm run example:build

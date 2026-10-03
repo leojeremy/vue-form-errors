@@ -1,3 +1,3 @@
-export { useFormErrors } from './useFormErrors';
-export type { ErrorValue, FieldErrors, UseFormErrorsOptions } from './useFormErrors';
-export { fromLaravel422 } from './fromLaravel422';
+export { useFormErrors } from './useFormErrors.js';
+export type { ErrorValue, FieldErrors, UseFormErrorsOptions } from './useFormErrors.js';
+export { fromLaravel422 } from './fromLaravel422.js';
