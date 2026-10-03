@@ -32,3 +32,31 @@ export function fromLaravel422(body: unknown): Record<string, string[]> {
 
     return result;
 }
+
+/**
+ * Reads the field errors from a `fetch` response, or returns `null` when the
+ * response is not a validation failure.
+ *
+ * `null` is the important case. Treating every failed response as "no field
+ * errors" clears the form's errors on a 500 or a 419 and leaves the user
+ * looking at an unchanged form; `null` tells the caller to handle it as a
+ * general failure instead.
+ *
+ * Only a 422 with a JSON body counts. The body is consumed, so pass
+ * `response.clone()` if you need to read it again.
+ */
+export async function readValidationErrors(response: Response): Promise<Record<string, string[]> | null> {
+    if (response.status !== 422) {
+        return null;
+    }
+
+    let body: unknown;
+
+    try {
+        body = await response.json();
+    } catch {
+        return null;
+    }
+
+    return fromLaravel422(body);
+}
