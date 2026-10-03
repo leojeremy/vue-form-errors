@@ -1,7 +1,7 @@
 {
   "name": "vue-form-errors",
-  "version": "0.1.0",
-  "description": "Vue 3 composable that wires server validation errors (e.g. a 422) to form fields accessibly: aria-invalid, aria-describedby, and focus on the first error in page order.",
+  "version": "0.2.0",
+  "description": "Accessible server-side validation errors for Vue 3: aria-invalid, aria-describedby, an error summary, and focus on the first error in page order. Works with Laravel 422s, Inertia or any errors object.",
   "license": "MIT",
   "author": "Jeremy Leo",
   "repository": {
@@ -60,5 +60,6 @@
   },
   "engines": {
     "node": ">=22.12"
-  }
+  },
+  "homepage": "https://leojeremy.github.io/vue-form-errors/"
 }
